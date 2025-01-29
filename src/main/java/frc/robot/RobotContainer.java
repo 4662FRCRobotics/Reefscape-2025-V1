@@ -22,6 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -78,6 +79,8 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
+            System.out.println("\n\n\n conficure button bindings is being called \n\n");
+
     m_operatorController.a() 
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTrough));
     m_operatorController.x()
@@ -86,6 +89,8 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel3));
     m_operatorController.y()
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
+    m_operatorController.leftBumper()
+        .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
   }
 
   /**

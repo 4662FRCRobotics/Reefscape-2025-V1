@@ -66,7 +66,7 @@ public final class Configs {
                 .outputRange(-1, 1);
         elevatorConfig.closedLoop.maxMotion
                 .maxAcceleration(1000)
-                .maxVelocity(1000)
+                .maxVelocity(2000)
                 .allowedClosedLoopError(1);
         }
     }
