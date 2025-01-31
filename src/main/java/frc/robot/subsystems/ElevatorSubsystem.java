@@ -97,7 +97,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean isElevatorStalled(){
-    return m_motorElevatorLeft.getOutputCurrent() >=20;
+    return m_motorElevatorLeft.getOutputCurrent() >= ElevatorConstants.kStallCurrent;
   }
 
   public void stopElevatorMotor(){
