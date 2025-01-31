@@ -108,6 +108,10 @@ public final class Constants {
     public static final double kLevel2 = 50;
     public static final double kLevel3 = 100;
     public static final double kLevel4 = 150;
+    public static final double kPostionAdjust = 5;
+    public static final int kCurrentLimit = 40;
+    public static final double kSecondaryCurrentLimit = 50;
+    public static final double kStallCurrent = 20;
  }
  
   

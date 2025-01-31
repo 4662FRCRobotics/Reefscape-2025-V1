@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.List;
 
 /*
@@ -91,6 +92,12 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
     m_operatorController.leftBumper()
         .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
+    m_operatorController.povUp()
+        .onTrue(m_elevator.cmdAdjustElevatorPosition(true));
+    m_operatorController.povDown()
+        .onTrue(m_elevator.cmdAdjustElevatorPosition(false));
+    new Trigger(() -> m_elevator.isElevatorStalled())
+        .onTrue(m_elevator.cmdStopElevator());
   }
 
   /**

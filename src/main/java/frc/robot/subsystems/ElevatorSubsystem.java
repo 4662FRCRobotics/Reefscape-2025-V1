@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Configs.ElevatorMotor;
+//import frc.robot.Configs.ElevatorMotor;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -28,12 +28,15 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxConfig m_motorConfigRight;
   private SparkClosedLoopController m_closedLoopElevatorLeft;
   private SparkMaxConfig m_motorConfigLeft;
+  private double m_elevatorTargetPostion;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
     m_motorElevatorLeft = new SparkMax(ElevatorConstants.motorElevatorLeft, MotorType.kBrushless);
-      m_motorConfigLeft = new SparkMaxConfig() ;
-      m_motorConfigLeft.idleMode(IdleMode.kBrake);
+      m_motorConfigLeft = new SparkMaxConfig();
+      m_motorConfigLeft.idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(ElevatorConstants.kCurrentLimit)
+        .secondaryCurrentLimit(ElevatorConstants.kSecondaryCurrentLimit);
       m_motorConfigLeft.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .p(0.4)
@@ -51,8 +54,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     m_motorConfigRight = new SparkMaxConfig();
     m_motorConfigRight
       .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(ElevatorConstants.kCurrentLimit)
+      .secondaryCurrentLimit(ElevatorConstants.kSecondaryCurrentLimit)
       .follow(ElevatorConstants.motorElevatorLeft,true);
     m_motorElevatorRight.configure(m_motorConfigRight,ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    m_elevatorTargetPostion = 0;
   }
 
   @Override
@@ -60,11 +67,25 @@ public class ElevatorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Left Current",m_motorElevatorLeft.getOutputCurrent());
     SmartDashboard.putNumber("Right Current",m_motorElevatorRight.getOutputCurrent());
+    SmartDashboard.putNumber("Elevator Position",m_elevatorTargetPostion);
   }
 
   public void setElevatorPosition(double targetPosition) {
-    SmartDashboard.putNumber("Elevator Position",targetPosition);
-    m_closedLoopElevatorLeft.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
+    m_elevatorTargetPostion = targetPosition;
+    m_closedLoopElevatorLeft.setReference(m_elevatorTargetPostion, ControlType.kMAXMotionPositionControl);
+  }
+
+  private void adjustElevatorPosition(boolean isAdjustUp) {
+    if (isAdjustUp) {
+      m_elevatorTargetPostion = m_elevatorTargetPostion + ElevatorConstants.kPostionAdjust;
+    } else {
+      m_elevatorTargetPostion = m_elevatorTargetPostion - ElevatorConstants.kPostionAdjust;
+    }
+    m_closedLoopElevatorLeft.setReference(m_elevatorTargetPostion, ControlType.kMAXMotionPositionControl);
+  }
+
+  public Command cmdAdjustElevatorPosition(boolean isAdjustUp) {
+    return Commands.runOnce(() -> adjustElevatorPosition(isAdjustUp) , this);
   }
 
   public Command cmdSetElevatorPosition(double targetPosition) {
@@ -76,7 +97,15 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean isElevatorStalled(){
-    return m_motorElevatorLeft.getOutputCurrent() >=1;
+    return m_motorElevatorLeft.getOutputCurrent() >=20;
+  }
+
+  public void stopElevatorMotor(){
+    m_motorElevatorLeft.set(0);
+  }
+
+  public Command cmdStopElevator() {
+    return Commands.runOnce(() -> stopElevatorMotor() , this);
   }
 
 }
