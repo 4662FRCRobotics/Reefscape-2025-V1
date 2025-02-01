@@ -57,6 +57,9 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 16;
 
     public static final boolean kGyroReversed = false;
+
+    public static final String kCameraOne = "HD_Webcam_C615";
+    public static final String kCameraTwo = "HD_USB_Camera";
   }
 
   public static final class ModuleConstants {
