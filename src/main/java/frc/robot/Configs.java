@@ -53,4 +53,21 @@ public final class Configs {
                     .positionWrappingInputRange(0, turningFactor);
         }
     }
+
+    public static final class ElevatorMotor {
+        public static final SparkMaxConfig elevatorConfig = new SparkMaxConfig() ;
+        static {
+                elevatorConfig.idleMode(IdleMode.kBrake);
+                elevatorConfig.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(0.4)
+                .i(0)
+                .d(0)
+                .outputRange(-1, 1);
+        elevatorConfig.closedLoop.maxMotion
+                .maxAcceleration(1000)
+                .maxVelocity(2000)
+                .allowedClosedLoopError(1);
+        }
+    }
 }

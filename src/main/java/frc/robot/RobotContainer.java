@@ -13,14 +13,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+//import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.libraries.ConsoleAuto;
 import frc.robot.subsystems.AutonomousSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -40,9 +42,11 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
   private final ConsoleAuto m_ConsoleAuto = 
     new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
@@ -57,7 +61,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    // Configure default commands
+     //Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -80,7 +84,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
+    //new JoystickButton(m_driverController, Button.kR1.value)
+    m_driverController.x()
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
@@ -101,9 +106,29 @@ public class RobotContainer {
     .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
     ;
   }
-  private static Trigger trgAutoSelect() {
-    //System.out.println("bool auto console" + m_runAutoConsole);
-    return new Trigger(() -> m_runAutoConsole);
+    private static Trigger trgAutoSelect() {
+      //System.out.println("bool auto console" + m_runAutoConsole);
+      return new Trigger(() -> m_runAutoConsole);
+
+//            System.out.println("\n\n\n conficure button bindings is being called \n\n");
+
+    m_operatorController.a() 
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTrough));
+    m_operatorController.x()
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel2));
+    m_operatorController.b()
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel3));
+    m_operatorController.y()
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
+    m_operatorController.leftBumper()
+        .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
+    m_operatorController.povUp()
+        .onTrue(m_elevator.cmdAdjustElevatorPosition(true));
+    m_operatorController.povDown()
+        .onTrue(m_elevator.cmdAdjustElevatorPosition(false));
+    new Trigger(() -> m_elevator.isElevatorStalled())
+        .onTrue(m_elevator.cmdStopElevator());
+
   }
 
   private void runAutoConsoleTrue() {

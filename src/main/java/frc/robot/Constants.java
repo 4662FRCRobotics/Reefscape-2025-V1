@@ -57,6 +57,9 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 16;
 
     public static final boolean kGyroReversed = false;
+
+    public static final String kCameraOne = "HD_Webcam_C615";
+    public static final String kCameraTwo = "HD_USB_Camera";
   }
 
   public static final class ModuleConstants {
@@ -78,6 +81,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
     public static final int kAUTONOMOUS_CONSOLE_PORT = 2;
   }
@@ -100,4 +104,21 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 6784;
   }
+
+  public static final class ElevatorConstants {
+    public static final int motorElevatorLeft = 20;
+    public static final int motorElevatorRight = 21;
+    public static final double kTrough = 0;
+    public static final double kLevel2 = 50;
+    public static final double kLevel3 = 100;
+    public static final double kLevel4 = 150;
+    public static final double kPostionAdjust = 5;
+    public static final int kCurrentLimit = 40;
+    public static final double kSecondaryCurrentLimit = 50;
+    public static final double kStallCurrent = 20;
+ }
+ 
+  
+
+
 }

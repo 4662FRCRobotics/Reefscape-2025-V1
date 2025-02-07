@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -55,10 +58,17 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  PhotonCamera m_driverCameraOne;
+  PhotonCamera m_driverCameraTwo;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+    m_driverCameraOne = new PhotonCamera(DriveConstants.kCameraOne);
+    m_driverCameraOne.setDriverMode(true);
+    m_driverCameraTwo = new PhotonCamera(DriveConstants.kCameraTwo);
+    m_driverCameraTwo.setDriverMode(true);
   }
 
   @Override
