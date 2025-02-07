@@ -19,6 +19,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.libraries.ConsoleAuto;
+import frc.robot.subsystems.AutonomousSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +28,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 
 /*
@@ -44,6 +48,12 @@ public class RobotContainer {
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
+  private final ConsoleAuto m_ConsoleAuto = 
+    new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
+
+  private final AutonomousSubsystem m_AutonomousSubsystem = new AutonomousSubsystem(m_ConsoleAuto, this);
+
+  static boolean m_runAutoConsole;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -79,8 +89,28 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+    
+     runAutoConsoleFalse();
+    //new Trigger(DriverStation::isDisabled)
+    //new Trigger(RobotModeTriggers.disabled())
+    new Trigger(trgAutoSelect())
+      .whileTrue(m_AutonomousSubsystem.cmdAutoSelect());
+    runAutoConsoleTrue();
 
-            System.out.println("\n\n\n conficure button bindings is being called \n\n");
+    new Trigger(RobotModeTriggers.disabled())
+      .onTrue(Commands.runOnce(this::runAutoConsoleTrue)
+        .ignoringDisable(true))
+      ;
+
+    new Trigger(RobotModeTriggers.disabled())
+    .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
+    ;
+  }
+    private static Trigger trgAutoSelect() {
+      //System.out.println("bool auto console" + m_runAutoConsole);
+      return new Trigger(() -> m_runAutoConsole);
+
+//            System.out.println("\n\n\n conficure button bindings is being called \n\n");
 
     m_operatorController.a() 
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTrough));
@@ -98,16 +128,26 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdAdjustElevatorPosition(false));
     new Trigger(() -> m_elevator.isElevatorStalled())
         .onTrue(m_elevator.cmdStopElevator());
+
   }
 
+  private void runAutoConsoleTrue() {
+    m_runAutoConsole = true;
+    System.out.println("true " + m_runAutoConsole);
+  }
+
+  private void runAutoConsoleFalse() {
+    m_runAutoConsole = false;
+    System.out.println("false " + m_runAutoConsole);
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+   public Command getAutonomousCommand() {
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
+  /**   TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
@@ -143,6 +183,7 @@ public class RobotContainer {
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-  }
+    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));*/
+    return m_AutonomousSubsystem.cmdAutoControl();
+}
 }
