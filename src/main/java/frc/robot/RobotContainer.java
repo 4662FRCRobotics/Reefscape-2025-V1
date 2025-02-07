@@ -105,13 +105,7 @@ public class RobotContainer {
     new Trigger(RobotModeTriggers.disabled())
     .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
     ;
-  }
-    private static Trigger trgAutoSelect() {
-      //System.out.println("bool auto console" + m_runAutoConsole);
-      return new Trigger(() -> m_runAutoConsole);
-
-//            System.out.println("\n\n\n conficure button bindings is being called \n\n");
-
+  
     m_operatorController.a() 
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTrough));
     m_operatorController.x()
@@ -129,6 +123,11 @@ public class RobotContainer {
     new Trigger(() -> m_elevator.isElevatorStalled())
         .onTrue(m_elevator.cmdStopElevator());
 
+  }
+
+  private static Trigger trgAutoSelect() {
+    //System.out.println("bool auto console" + m_runAutoConsole);
+    return new Trigger(() -> m_runAutoConsole);
   }
 
   private void runAutoConsoleTrue() {
@@ -185,5 +184,5 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));*/
     return m_AutonomousSubsystem.cmdAutoControl();
-}
+  }
 }
