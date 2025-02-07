@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -129,6 +131,7 @@ public class AutonomousSubsystem extends SubsystemBase{
   private int m_iPatternSelect;
 
   private AutonomousSteps[][] m_cmdSteps;
+  private Command[] m_stepCommands;
 
   public AutonomousSubsystem(ConsoleAuto consoleAuto, RobotContainer robotContainer) {
 
@@ -143,6 +146,15 @@ public class AutonomousSubsystem extends SubsystemBase{
       fmtDisplay(iat);
     }
   
+    m_stepCommands = new Command[ AutonomousSteps.values().length];
+    int cmdIx = 0;
+    for (AutonomousSteps stepCommands: AutonomousSteps.values()) {
+      System.out.println(stepCommands);
+      m_stepCommands [cmdIx] = getAutoCmd(stepCommands);
+      cmdIx++;
+    }
+
+
 /*
  *  CRITICAL PIECE
  * This two dimensional array defines the steps for each selectable Auto pattern
@@ -286,7 +298,9 @@ public class AutonomousSubsystem extends SubsystemBase{
     int cmdIx = 0;
     for (int ix = 0; ix < m_cmdSteps[m_iPatternSelect].length; ix++) {
       if (m_bStepSWList[ix]) {
-        autoCmdList[cmdIx] = getAutoCmd(m_autoStep[ix]);
+        //autoCmdList[cmdIx] = getAutoCmd(m_autoStep[ix]);
+        System.out.println("Ordinal" + m_autoStep[ix].ordinal());
+        autoCmdList[cmdIx] = m_stepCommands[m_autoStep[ix].ordinal()];
         cmdIx++;
       }
     }
@@ -301,7 +315,13 @@ public class AutonomousSubsystem extends SubsystemBase{
     switch (autoStep.getStepStruc()) {
       case 'W':
         double waitTime = autoStep.getWaitTIme();
-        workCmd = getWaitCommand(waitTime == 99.9 ? m_ConsoleAuto.getROT_SW_1() : waitTime);
+       // workCmd = getWaitCommand(waitTime == 99.9 ? m_ConsoleAuto.getROT_SW_1() : waitTime);
+       if (waitTime == 99.9) {
+        workCmd = getWaitLoop(() -> m_ConsoleAuto.getROT_SW_1());
+       } else {
+        workCmd = getWaitCommand(waitTime);
+       }
+
         break;
       case 'D':
       //  workCmd =  m_robotContainer.getDrivePathCommand(autoStep.toString());
@@ -330,6 +350,10 @@ public class AutonomousSubsystem extends SubsystemBase{
 
   private Command getWaitCommand(double seconds) {
     return Commands.waitSeconds(seconds);
+  }
+
+  private Command getWaitLoop(DoubleSupplier loopTime) {
+    return Commands.waitSeconds(loopTime.getAsDouble());
   }
   
 }
