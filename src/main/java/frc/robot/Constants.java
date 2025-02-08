@@ -57,6 +57,9 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 16;
 
     public static final boolean kGyroReversed = false;
+
+    public static final String kCameraOne = "HD_Webcam_C615";
+    public static final String kCameraTwo = "HD_USB_Camera";
   }
 
   public static final class ModuleConstants {
@@ -80,6 +83,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
+    public static final int kAUTONOMOUS_CONSOLE_PORT = 2;
   }
 
   public static final class AutoConstants {
