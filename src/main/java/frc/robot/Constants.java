@@ -115,7 +115,10 @@ public final class Constants {
     public static final double kPostionAdjust = 5;
     public static final int kCurrentLimit = 40;
     public static final double kSecondaryCurrentLimit = 50;
-    public static final double kStallCurrent = 20;
+    public static final double kStallCurrent = 30;
+    public static final double kElevatorDown = -0.4;
+    public static final double kBottomCurrent = 10;
+    public static final double kFloorLevel = -100;
  }
  
   
