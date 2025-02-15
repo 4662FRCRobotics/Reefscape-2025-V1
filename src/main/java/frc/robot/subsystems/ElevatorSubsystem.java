@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -29,6 +30,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkClosedLoopController m_closedLoopElevatorLeft;
   private SparkMaxConfig m_motorConfigLeft;
   private double m_elevatorTargetPostion;
+  private RelativeEncoder m_encoderElevatorLeft;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -58,6 +60,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       .secondaryCurrentLimit(ElevatorConstants.kSecondaryCurrentLimit)
       .follow(ElevatorConstants.motorElevatorLeft,true);
     m_motorElevatorRight.configure(m_motorConfigRight,ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    m_encoderElevatorLeft = m_motorElevatorLeft.getEncoder();
 
     m_elevatorTargetPostion = 0;
   }
@@ -108,4 +112,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> stopElevatorMotor() , this);
   }
 
+public boolean isElevatorUp(){
+  return m_encoderElevatorLeft.getPosition() > ElevatorConstants.kLevel2;
+}
 }

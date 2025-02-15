@@ -35,7 +35,7 @@ public class AutonomousSubsystem extends SubsystemBase{
    * AutonomousSteps details the steps and step parameters available for auto
    * 
    * parameters
-   * stepStruct: step structure or what type of command
+   * stepCmd: step structure or what type of command
    * waitTime: wait time in seconds for wait commands
    * Switch True: switch number that will turn on this step if true
    * Switch False: switch number that will turn off this step if true
@@ -61,43 +61,43 @@ public class AutonomousSubsystem extends SubsystemBase{
     //END('E')
     ;
 
-    private final char m_stepStruct;
+    private final char m_stepCmd;
     private final double m_waitTime;
     private final int m_iSwATrue;
     private final int m_iSwBFalse;
     private final String m_planName;
 
-    private AutonomousSteps(char cStepStruct, double dWaitTime, int iSwATrue, int iSwBFalse, String planName) {
-      this.m_stepStruct = cStepStruct;
+    private AutonomousSteps(char cstepCmd, double dWaitTime, int iSwATrue, int iSwBFalse, String planName) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = dWaitTime;
       this.m_iSwATrue = iSwATrue;
       this.m_iSwBFalse = iSwBFalse;
       this.m_planName = planName;
     }
 
-  /*   private AutonomousSteps(char cStepStruct, double dWaitTime, int iSwATrue) {
-      this.m_stepStruct = cStepStruct;
+  /*   private AutonomousSteps(char cstepCmd, double dWaitTime, int iSwATrue) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = dWaitTime;
       this.m_iSwATrue = iSwATrue;
       this.m_iSwBFalse = 0;
     }
 
-    private AutonomousSteps(char cStepStruct, double dWaitTime) {
-      this.m_stepStruct = cStepStruct;
+    private AutonomousSteps(char cstepCmd, double dWaitTime) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = dWaitTime;
       this.m_iSwATrue = 0;
       this.m_iSwBFalse = 0;
     }
     
-    private AutonomousSteps(char cStepStruct) {
-      this.m_stepStruct = cStepStruct;
+    private AutonomousSteps(char cstepCmd) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = 0;
       this.m_iSwATrue = 0;
       this.m_iSwBFalse = 0;
     }*/
 
     public char getStepStruc() {
-      return m_stepStruct;
+      return m_stepCmd;
     }
 
     public double getWaitTIme() {
@@ -154,7 +154,7 @@ public class AutonomousSubsystem extends SubsystemBase{
     m_stepCommands = new Command[ AutonomousSteps.values().length];
     int cmdIx = 0;
     for (AutonomousSteps stepCommands: AutonomousSteps.values()) {
-      System.out.println(stepCommands);
+    //  System.out.println(stepCommands);
       m_stepCommands [cmdIx] = getAutoCmd(stepCommands);
       cmdIx++;
     }
@@ -305,7 +305,7 @@ public class AutonomousSubsystem extends SubsystemBase{
     for (int ix = 0; ix < m_cmdSteps[m_iPatternSelect].length; ix++) {
       if (m_bStepSWList[ix]) {
         //autoCmdList[cmdIx] = getAutoCmd(m_autoStep[ix]);
-        System.out.println("Ordinal" + m_autoStep[ix].ordinal());
+     //   System.out.println("Ordinal" + m_autoStep[ix].ordinal());
         autoCmdList[cmdIx] = m_stepCommands[m_autoStep[ix].ordinal()];
         cmdIx++;
       }
