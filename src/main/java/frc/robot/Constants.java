@@ -121,6 +121,15 @@ public final class Constants {
     public static final double kFloorLevel = -100;
  }
  
+  public static final class HandConstants {
+    public static final int motorHand = 30;
+    public static final double kHandUp = 10;
+    public static final double kHandMid = 5;
+    public static final double kHandDown = 0;
+    public static final double kHandStallCurrent = 20;
+    public static final int kCurrentLimit = 20;
+    public static final double kSecondaryCurrentLimit = 30;
+ }
   
 
 
