@@ -14,7 +14,11 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HandConstants;
 
 public class HandSubsystem extends SubsystemBase {
@@ -42,11 +46,26 @@ public class HandSubsystem extends SubsystemBase {
         .allowedClosedLoopError(1);
       m_closedLoopHand = m_motorHand.getClosedLoopController();
       m_motorHand.configure(m_motorConfigHand, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-      
+
+      m_encoderHand = m_motorHand.getEncoder();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber( "HandPostion", m_encoderHand.getPosition());
+    SmartDashboard.putNumber("Hand Current",m_motorHand.getOutputCurrent());
+  }
+
+  public boolean isHandStalled() {
+   return m_motorHand.getOutputCurrent()>= HandConstants.kHandStallCurrent;
+  } 
+
+  public void stopHandMotor() {
+    m_motorHand.set(0);
+  }
+
+  public Command cmdStopHand() {
+    return Commands.runOnce(() -> stopHandMotor() , this);
   }
 }
