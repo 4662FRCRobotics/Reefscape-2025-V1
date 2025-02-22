@@ -20,6 +20,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,7 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU(ADIS16470_IMU.IMUAxis.kY, ADIS16470_IMU.IMUAxis.kX, ADIS16470_IMU.IMUAxis.kZ);
 
   // Odometry class for tracking robot pose
  /*  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -73,6 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
             getHeading(),
             getModulePositions(),
             new Pose2d());
+    private final Field2d m_field = new Field2d();
 
   PhotonCamera m_driverCameraOne;
   PhotonCamera m_driverCameraTwo;
@@ -114,6 +117,8 @@ public class DriveSubsystem extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
 
+    SmartDashboard.putData("Field", m_field);
+
     m_driverCameraOne = new PhotonCamera(DriveConstants.kCameraOne);
     m_driverCameraOne.setDriverMode(true);
     m_driverCameraTwo = new PhotonCamera(DriveConstants.kCameraTwo);
@@ -136,6 +141,8 @@ public class DriveSubsystem extends SubsystemBase {
       getHeading(),
       getModulePositions()
       );
+
+    m_field.setRobotPose(m_poseEstimator.getEstimatedPosition());
   }
 
   /**
@@ -168,8 +175,18 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean halfThrottle) {
     // Convert the commanded speeds into the correct units for the drivetrain
+    double throttle = 1.0;
+
+    if (halfThrottle){
+      throttle = 0.5;
+    }
+
+    xSpeed = squareAxis(xSpeed)*throttle;
+    ySpeed = squareAxis(ySpeed)*throttle;
+    rot = squareAxis(rot)*throttle;
+    
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
@@ -185,6 +202,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  private double squareAxis(double axis) {
+    return Math.copySign(axis * axis, axis);
   }
 
   /**

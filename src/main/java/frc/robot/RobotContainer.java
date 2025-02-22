@@ -70,7 +70,8 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true),
+                false,
+                m_elevator.isElevatorUp()),
             m_robotDrive));
   }
 
@@ -116,6 +117,8 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
     m_operatorController.leftBumper()
         .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
+    m_operatorController.rightBumper()
+        .onTrue(m_elevator.cmdElevatorZero());
     m_operatorController.povUp()
         .onTrue(m_elevator.cmdAdjustElevatorPosition(true));
     m_operatorController.povDown()
@@ -146,46 +149,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return m_robotDrive.getPathStep("drive out - Auto");
-    
-    // Create config for trajectory
-  /**   TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));*/
-
     return m_AutonomousSubsystem.cmdAutoControl();
+  }
+
+  public Command getDrivePlanCmd(String planName) {
+    return m_robotDrive.getPathStep(planName);
   }
 }

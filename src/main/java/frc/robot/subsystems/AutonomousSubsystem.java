@@ -35,7 +35,7 @@ public class AutonomousSubsystem extends SubsystemBase{
    * AutonomousSteps details the steps and step parameters available for auto
    * 
    * parameters
-   * stepStruct: step structure or what type of command
+   * stepCmd: step structure or what type of command
    * waitTime: wait time in seconds for wait commands
    * Switch True: switch number that will turn on this step if true
    * Switch False: switch number that will turn off this step if true
@@ -45,10 +45,11 @@ public class AutonomousSubsystem extends SubsystemBase{
    * after that they should be paths only
    */
   public enum AutonomousSteps {
-    WAIT1('W', 1.0),
-    WAIT2('W', 2.0),
-    WAITLOOP('W', 99.9),
-    DRIVE_OUT('D', 0.0, 1),
+    WAIT1('W', 1.0, 0, 0, ""),
+    WAIT2('W', 2.0, 0, 0, ""),
+    WAITLOOP('W', 99.9, 0, 0, ""),
+    DRIVE_OUT('D', 0.0, 1, 0, "drive out - Auto"),
+    DRIVE_REEF_LEFT('D', 0.0, 1, 0, "reef barge left - auto")
     //SHOOTNOTE('S', 0.0, 1),
    // SpkrCntrOut1('D', 0.0, 2),
    // SpkrCntrRtrn1('D', 0.0, 3),
@@ -57,44 +58,46 @@ public class AutonomousSubsystem extends SubsystemBase{
    // DRV_BACK_1('D', 0.0, 4),
     //DRV_INTK_2('I', 0.0, 5),
    // DRV_STRT_2('D', 0.0, 6, 5),
-    END('E')
+    //END('E')
     ;
 
-    private final char m_stepStruct;
+    private final char m_stepCmd;
     private final double m_waitTime;
     private final int m_iSwATrue;
     private final int m_iSwBFalse;
+    private final String m_planName;
 
-    private AutonomousSteps(char cStepStruct, double dWaitTime, int iSwATrue, int iSwBFalse) {
-      this.m_stepStruct = cStepStruct;
+    private AutonomousSteps(char cstepCmd, double dWaitTime, int iSwATrue, int iSwBFalse, String planName) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = dWaitTime;
       this.m_iSwATrue = iSwATrue;
       this.m_iSwBFalse = iSwBFalse;
+      this.m_planName = planName;
     }
 
-    private AutonomousSteps(char cStepStruct, double dWaitTime, int iSwATrue) {
-      this.m_stepStruct = cStepStruct;
+  /*   private AutonomousSteps(char cstepCmd, double dWaitTime, int iSwATrue) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = dWaitTime;
       this.m_iSwATrue = iSwATrue;
       this.m_iSwBFalse = 0;
     }
 
-    private AutonomousSteps(char cStepStruct, double dWaitTime) {
-      this.m_stepStruct = cStepStruct;
+    private AutonomousSteps(char cstepCmd, double dWaitTime) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = dWaitTime;
       this.m_iSwATrue = 0;
       this.m_iSwBFalse = 0;
     }
     
-    private AutonomousSteps(char cStepStruct) {
-      this.m_stepStruct = cStepStruct;
+    private AutonomousSteps(char cstepCmd) {
+      this.m_stepCmd = cstepCmd;
       this.m_waitTime = 0;
       this.m_iSwATrue = 0;
       this.m_iSwBFalse = 0;
-    }
+    }*/
 
     public char getStepStruc() {
-      return m_stepStruct;
+      return m_stepCmd;
     }
 
     public double getWaitTIme() {
@@ -108,7 +111,9 @@ public class AutonomousSubsystem extends SubsystemBase{
     public int getBSwitch() {
       return m_iSwBFalse;
     }
-
+    public String getplanName() {
+      return m_planName;
+    }
   }
 
   private int kSTEP_MAX = 12;
@@ -149,7 +154,7 @@ public class AutonomousSubsystem extends SubsystemBase{
     m_stepCommands = new Command[ AutonomousSteps.values().length];
     int cmdIx = 0;
     for (AutonomousSteps stepCommands: AutonomousSteps.values()) {
-      System.out.println(stepCommands);
+    //  System.out.println(stepCommands);
       m_stepCommands [cmdIx] = getAutoCmd(stepCommands);
       cmdIx++;
     }
@@ -174,6 +179,7 @@ public class AutonomousSubsystem extends SubsystemBase{
           },
       //REEF LEFT
           {AutonomousSteps.WAITLOOP
+            // AutonomousSteps.DRIVE_REEF_LEFT
            // AutonomousSteps.SHOOTNOTE
           },
       //REEF RIGHT
@@ -299,7 +305,7 @@ public class AutonomousSubsystem extends SubsystemBase{
     for (int ix = 0; ix < m_cmdSteps[m_iPatternSelect].length; ix++) {
       if (m_bStepSWList[ix]) {
         //autoCmdList[cmdIx] = getAutoCmd(m_autoStep[ix]);
-        System.out.println("Ordinal" + m_autoStep[ix].ordinal());
+     //   System.out.println("Ordinal" + m_autoStep[ix].ordinal());
         autoCmdList[cmdIx] = m_stepCommands[m_autoStep[ix].ordinal()];
         cmdIx++;
       }
@@ -324,8 +330,8 @@ public class AutonomousSubsystem extends SubsystemBase{
 
         break;
       case 'D':
-      //  workCmd =  m_robotContainer.getDrivePathCommand(autoStep.toString());
-        workCmd = Commands.print("Drive command");
+        workCmd =  m_robotContainer.getDrivePlanCmd(autoStep.getplanName());
+       // workCmd = Commands.print("Drive command");
         break;
       case 'I':
        // workCmd =  m_robotContainer.getIntakePathCommand(autoStep.toString(), autoStep.getWaitTIme());

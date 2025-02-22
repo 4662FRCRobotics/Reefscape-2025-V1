@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -29,6 +30,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkClosedLoopController m_closedLoopElevatorLeft;
   private SparkMaxConfig m_motorConfigLeft;
   private double m_elevatorTargetPostion;
+  private RelativeEncoder m_encoderElevatorLeft;
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -49,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         .allowedClosedLoopError(1);
         
     m_closedLoopElevatorLeft = m_motorElevatorLeft.getClosedLoopController();
-    m_motorElevatorLeft.configure(m_motorConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_motorElevatorLeft.configure(m_motorConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_motorElevatorRight = new SparkMax(ElevatorConstants.motorElevatorRight, MotorType.kBrushless);
     m_motorConfigRight = new SparkMaxConfig();
     m_motorConfigRight
@@ -57,7 +59,9 @@ public class ElevatorSubsystem extends SubsystemBase {
       .smartCurrentLimit(ElevatorConstants.kCurrentLimit)
       .secondaryCurrentLimit(ElevatorConstants.kSecondaryCurrentLimit)
       .follow(ElevatorConstants.motorElevatorLeft,true);
-    m_motorElevatorRight.configure(m_motorConfigRight,ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_motorElevatorRight.configure(m_motorConfigRight,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    m_encoderElevatorLeft = m_motorElevatorLeft.getEncoder();
 
     m_elevatorTargetPostion = 0;
   }
@@ -68,6 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Left Current",m_motorElevatorLeft.getOutputCurrent());
     SmartDashboard.putNumber("Right Current",m_motorElevatorRight.getOutputCurrent());
     SmartDashboard.putNumber("Elevator Position",m_elevatorTargetPostion);
+    SmartDashboard.putNumber("Actual Pos", m_encoderElevatorLeft.getPosition());
   }
 
   public void setElevatorPosition(double targetPosition) {
@@ -108,4 +113,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> stopElevatorMotor() , this);
   }
 
+public boolean isElevatorUp(){
+  return m_encoderElevatorLeft.getPosition() > ElevatorConstants.kLevel2;
+}
+
+private void elevatorZero(){
+  stopElevatorMotor();
+  m_encoderElevatorLeft.setPosition(0);
+}
+public Command cmdElevatorZero(){
+  //return Commands.runOnce(() -> stopElevatorMotor(), this)
+   // .andThen(Commands.run(() -> runMotor(ElevatorConstants.kElevatorDown) , this))
+   return Commands.run(() -> setElevatorPosition(ElevatorConstants.kFloorLevel))
+    .until(() -> m_motorElevatorLeft.getOutputCurrent() >= ElevatorConstants.kBottomCurrent)
+    .andThen(() -> elevatorZero() , this)
+    ;
+}
 }
