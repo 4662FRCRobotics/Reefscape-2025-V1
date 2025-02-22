@@ -178,8 +178,8 @@ public class AutonomousSubsystem extends SubsystemBase{
             //AutonomousSteps.SpkrCntrRtrn1
           },
       //REEF LEFT
-          {AutonomousSteps.WAITLOOP,
-            AutonomousSteps.DRIVE_REEF_LEFT
+          {AutonomousSteps.WAITLOOP
+            // AutonomousSteps.DRIVE_REEF_LEFT
            // AutonomousSteps.SHOOTNOTE
           },
       //REEF RIGHT
