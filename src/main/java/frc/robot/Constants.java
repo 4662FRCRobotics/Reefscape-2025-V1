@@ -129,6 +129,7 @@ public final class Constants {
     public static final double kHandStallCurrent = 20;
     public static final int kCurrentLimit = 20;
     public static final double kSecondaryCurrentLimit = 30;
+    public static final double kPostionAdjust = 5;
  }
   
 

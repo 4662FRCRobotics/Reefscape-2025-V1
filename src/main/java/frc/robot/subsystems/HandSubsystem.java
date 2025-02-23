@@ -8,6 +8,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -26,6 +27,7 @@ public class HandSubsystem extends SubsystemBase {
   private SparkMaxConfig m_motorConfigHand;
   private RelativeEncoder m_encoderHand;
   private SparkClosedLoopController m_closedLoopHand;
+  private double m_handTargetPosition;
 
   public HandSubsystem() {
     m_motorHand = new SparkMax(HandConstants.motorHand, MotorType.kBrushless);
@@ -66,5 +68,27 @@ public class HandSubsystem extends SubsystemBase {
 
   public Command cmdStopHand() {
     return Commands.runOnce(() -> stopHandMotor() , this);
+  }
+
+  private void adjustHandPosition(boolean isAdjustUp) {
+    if (isAdjustUp) {
+      m_handTargetPosition = m_handTargetPosition + HandConstants.kPostionAdjust;
+    } else {
+        m_handTargetPosition = m_handTargetPosition - HandConstants.kPostionAdjust;
+    }
+    m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
+  }
+
+  public void setHandPosition(double targetPosition) {
+    m_handTargetPosition = targetPosition;
+    m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
+  }
+
+  public Command cmdAdjustHandPosition(boolean isAdjustUp) {
+    return Commands.runOnce(() -> adjustHandPosition(isAdjustUp), this);
+  }
+
+  public Command cmdSetHandPosition(double targetPosition) {
+    return Commands.runOnce(() -> setHandPosition(targetPosition) , this);
   }
 }

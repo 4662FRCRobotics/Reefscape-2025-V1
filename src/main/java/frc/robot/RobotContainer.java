@@ -19,6 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.libraries.CommandXBoxOpControl;
 import frc.robot.libraries.ConsoleAuto;
 import frc.robot.subsystems.AutonomousSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -46,7 +47,7 @@ public class RobotContainer {
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+  CommandXBoxOpControl m_operatorController = new CommandXBoxOpControl(OIConstants.kOperatorControllerPort);
 
   private final ConsoleAuto m_ConsoleAuto = 
     new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
