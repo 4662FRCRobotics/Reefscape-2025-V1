@@ -26,6 +26,7 @@ import frc.robot.subsystems.AutonomousSubsystem;
 import frc.robot.subsystems.CameraServoSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -46,6 +47,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final HandSubsystem m_HandSubsystem = new HandSubsystem();
   private final CameraServoSubsystem m_CameraServoSubsystem = new CameraServoSubsystem();
 
   // The driver's controller
@@ -138,6 +140,12 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdAdjustElevatorPosition(false));
     new Trigger(() -> m_elevator.isElevatorStalled())
         .onTrue(m_elevator.cmdStopElevator());
+    m_operatorController.leftTrigger()
+        .onTrue(m_HandSubsystem.cmdSetHandPosition());
+    m_operatorController.povLeft()
+        .onTrue(m_HandSubsystem.cmdAdjustHandPosition(true));
+    m_operatorController.povRight()
+        .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
 
   }
 

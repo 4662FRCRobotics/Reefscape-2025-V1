@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HandConstants;
 
 public class HandSubsystem extends SubsystemBase {
@@ -79,8 +80,14 @@ public class HandSubsystem extends SubsystemBase {
     m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
   }
 
-  public void setHandPosition(double targetPosition) {
-    m_handTargetPosition = targetPosition;
+  public void setHandPosition() {
+    if (m_handTargetPosition == HandConstants.kHandDown) {
+      m_handTargetPosition = HandConstants.kHandUp;
+    }
+    else {
+      m_handTargetPosition = HandConstants.kHandDown;
+    }
+    //m_handTargetPosition = targetPosition;
     m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
   }
 
@@ -88,7 +95,21 @@ public class HandSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> adjustHandPosition(isAdjustUp), this);
   }
 
-  public Command cmdSetHandPosition(double targetPosition) {
-    return Commands.runOnce(() -> setHandPosition(targetPosition) , this);
+  public Command cmdSetHandPosition() {
+    return Commands.runOnce(() -> setHandPosition() , this);
+  }
+
+  private void handZero(){
+  stopHandMotor();
+  m_encoderHand.setPosition(0);
+  }
+
+  public Command cmdHandZero(){
+  //return Commands.runOnce(() -> stopElevatorMotor(), this)
+   // .andThen(Commands.run(() -> runMotor(ElevatorConstants.kElevatorDown) , this))
+   return Commands.run(() ->  m_closedLoopHand.setReference(HandConstants.kHandDown, ControlType.kMAXMotionPositionControl))
+    .until(() -> m_motorHand.getOutputCurrent() >= HandConstants.kCurrentLimit)
+    .andThen(() -> handZero() , this)
+    ;
   }
 }
