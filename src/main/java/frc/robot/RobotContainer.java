@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
@@ -22,6 +23,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.libraries.CommandXBoxOpControl;
 import frc.robot.libraries.ConsoleAuto;
 import frc.robot.subsystems.AutonomousSubsystem;
+import frc.robot.subsystems.CameraServoSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,6 +46,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final CameraServoSubsystem m_CameraServoSubsystem = new CameraServoSubsystem();
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -51,6 +54,9 @@ public class RobotContainer {
 
   private final ConsoleAuto m_ConsoleAuto = 
     new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
+  
+  private final CommandGenericHID m_CommandGenericHID = 
+    new CommandGenericHID(OIConstants.kTeleopConsolePort);
 
   private final AutonomousSubsystem m_AutonomousSubsystem = new AutonomousSubsystem(m_ConsoleAuto, this);
 
@@ -74,6 +80,12 @@ public class RobotContainer {
                 false,
                 m_elevator.isElevatorUp()),
             m_robotDrive));
+    
+    m_CameraServoSubsystem.setDefaultCommand(
+      //m_CameraServoSubsystem.cmdCameraAngle(m_CommandGenericHID.getRawAxis(0))
+     new RunCommand(
+      () -> m_CameraServoSubsystem.setCameraAngle(m_CommandGenericHID.getRawAxis(0)) , m_CameraServoSubsystem)
+    );
   }
 
   /**

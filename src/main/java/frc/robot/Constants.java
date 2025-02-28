@@ -84,6 +84,7 @@ public final class Constants {
     public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
     public static final int kAUTONOMOUS_CONSOLE_PORT = 2;
+    public static final int kTeleopConsolePort = 3;
   }
 
   public static final class AutoConstants {
@@ -131,6 +132,10 @@ public final class Constants {
     public static final double kSecondaryCurrentLimit = 30;
     public static final double kPostionAdjust = 5;
  }
+
+  public static final class CameraServoConstants {
+    public static final int servoPort = 0;
+  }
   
 
 
