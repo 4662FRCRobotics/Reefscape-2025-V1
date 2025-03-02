@@ -134,7 +134,7 @@ public final class Constants {
  }
 
   public static final class CameraServoConstants {
-    public static final int servoPort = 0;
+    public static final int servoPort = 9;
   }
   
 

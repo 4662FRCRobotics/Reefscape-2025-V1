@@ -31,9 +31,16 @@ public class ElevatorSubsystem extends SubsystemBase {
   private SparkMaxConfig m_motorConfigLeft;
   private double m_elevatorTargetPostion;
   private RelativeEncoder m_encoderElevatorLeft;
+  private double m_elevatorP;
+  private double m_elevatorI;
+  private double m_elevatorD;
+
 
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
+    m_elevatorP = 0.4;
+    m_elevatorI = 0;
+    m_elevatorD = 0;
     m_motorElevatorLeft = new SparkMax(ElevatorConstants.motorElevatorLeft, MotorType.kBrushless);
       m_motorConfigLeft = new SparkMaxConfig();
       m_motorConfigLeft.idleMode(IdleMode.kBrake)
@@ -41,9 +48,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         .secondaryCurrentLimit(ElevatorConstants.kSecondaryCurrentLimit);
       m_motorConfigLeft.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .p(0.4)
-        .i(0)
-        .d(0)
+        .p(m_elevatorP)
+        .i(m_elevatorI)
+        .d(m_elevatorD)
         .outputRange(-1, 1);
       m_motorConfigLeft.closedLoop.maxMotion
         .maxAcceleration(1000)
@@ -73,6 +80,25 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Right Current",m_motorElevatorRight.getOutputCurrent());
     SmartDashboard.putNumber("Elevator Position",m_elevatorTargetPostion);
     SmartDashboard.putNumber("Actual Pos", m_encoderElevatorLeft.getPosition());
+    SmartDashboard.putNumber("Elevator P" , m_elevatorP);
+    SmartDashboard.putNumber( "Elevator I" , m_elevatorI);
+    SmartDashboard.putNumber( "Elevator D" , m_elevatorD);
+  }
+
+  private void updateElevatorConfig() {
+    m_elevatorP = SmartDashboard.getNumber("Elevator P" , m_elevatorP);
+    m_elevatorI = SmartDashboard.getNumber("Elevator I" , m_elevatorI);
+    m_elevatorD = SmartDashboard.getNumber("Elevator D" , m_elevatorD);
+    m_motorConfigLeft.closedLoop
+        //.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .p(m_elevatorP)
+        .i(m_elevatorI)
+        .d(m_elevatorD)
+        .outputRange(-1, 1);
+  }
+
+  public Command cmdUpdateElevatorConfig() {
+    return Commands.runOnce(() -> updateElevatorConfig() , this).ignoringDisable(true);
   }
 
   public void setElevatorPosition(double targetPosition) {

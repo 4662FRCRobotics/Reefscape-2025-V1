@@ -146,6 +146,8 @@ public class RobotContainer {
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(true));
     m_operatorController.povRight()
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
+    m_CommandGenericHID.button(1)
+        .onTrue(m_elevator.cmdUpdateElevatorConfig());
 
   }
 
