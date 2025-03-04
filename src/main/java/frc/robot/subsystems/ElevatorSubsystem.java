@@ -139,8 +139,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> stopElevatorMotor() , this);
   }
 
-public boolean isElevatorUp(){
+public boolean isElevatorUp() {
   return m_encoderElevatorLeft.getPosition() > ElevatorConstants.kLevel2;
+}
+
+public boolean isElevatorInPickup() {
+  return m_encoderElevatorLeft.getPosition() <= ElevatorConstants.kCoralPickup;
 }
 
 private void elevatorZero(){

@@ -120,6 +120,7 @@ public final class Constants {
     public static final double kElevatorDown = -0.4;
     public static final double kBottomCurrent = 10;
     public static final double kFloorLevel = -100;
+    public static final double kCoralPickup = 10;
  }
  
   public static final class HandConstants {
