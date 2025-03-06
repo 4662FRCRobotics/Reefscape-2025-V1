@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double m_elevatorP;
   private double m_elevatorI;
   private double m_elevatorD;
+  private SoftLimitConfig m_motorSoftLimitLeft;
 
 
   /** Creates a new ElevatorSubsystem. */
@@ -56,6 +58,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         .maxAcceleration(1000)
         .maxVelocity(2000)
         .allowedClosedLoopError(1);
+      m_motorSoftLimitLeft = new SoftLimitConfig();
+      m_motorSoftLimitLeft.forwardSoftLimit(ElevatorConstants.kSoftLimit)
+        .forwardSoftLimitEnabled(true);
         
     m_closedLoopElevatorLeft = m_motorElevatorLeft.getClosedLoopController();
     m_motorElevatorLeft.configure(m_motorConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -145,6 +150,10 @@ public boolean isElevatorUp() {
 
 public boolean isElevatorInPickup() {
   return m_encoderElevatorLeft.getPosition() <= ElevatorConstants.kCoralPickup;
+}
+
+public boolean isElevatorAtCrossbar() {
+  return m_encoderElevatorLeft.getPosition() >= ElevatorConstants.kCrossbar;
 }
 
 private void elevatorZero(){

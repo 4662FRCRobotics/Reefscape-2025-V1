@@ -28,7 +28,7 @@ public class HandSubsystem extends SubsystemBase {
   private SparkMaxConfig m_motorConfigHand;
   private RelativeEncoder m_encoderHand;
   private SparkClosedLoopController m_closedLoopHand;
-  private double m_handTargetPosition;
+  private double m_handTargetPosition = HandConstants.kHandDown;
 
   public HandSubsystem() {
     m_motorHand = new SparkMax(HandConstants.motorHand, MotorType.kBrushless);
@@ -111,5 +111,9 @@ public class HandSubsystem extends SubsystemBase {
     .until(() -> m_motorHand.getOutputCurrent() >= HandConstants.kCurrentLimit)
     .andThen(() -> handZero() , this)
     ;
+  }
+
+  public boolean isHandDown() {
+    return m_handTargetPosition == HandConstants.kHandDown;
   }
 }

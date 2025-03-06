@@ -110,9 +110,9 @@ public final class Constants {
     public static final int motorElevatorLeft = 20;
     public static final int motorElevatorRight = 21;
     public static final double kTrough = 0;
-    public static final double kLevel2 = 50;
-    public static final double kLevel3 = 100;
-    public static final double kLevel4 = 150;
+    public static final double kLevel2 = 0;
+    public static final double kLevel3 = 70;
+    public static final double kLevel4 = 155;
     public static final double kPostionAdjust = 5;
     public static final int kCurrentLimit = 40;
     public static final double kSecondaryCurrentLimit = 50;
@@ -120,12 +120,14 @@ public final class Constants {
     public static final double kElevatorDown = -0.4;
     public static final double kBottomCurrent = 10;
     public static final double kFloorLevel = -100;
-    public static final double kCoralPickup = 10;
+    public static final double kCoralPickup = 5;
+    public static final double kCrossbar = 30;
+    public static final double kSoftLimit = 156;
  }
  
   public static final class HandConstants {
     public static final int motorHand = 30;
-    public static final double kHandUp = 10;
+    public static final double kHandUp = -15;
    // public static final double kHandMid = 5;
     public static final double kHandDown = 0;
     public static final double kHandStallCurrent = 20;
