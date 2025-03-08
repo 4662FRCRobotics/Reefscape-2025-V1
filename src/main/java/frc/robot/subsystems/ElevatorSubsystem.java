@@ -55,8 +55,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         .d(m_elevatorD)
         .outputRange(-1, 1);
       m_motorConfigLeft.closedLoop.maxMotion
-        .maxAcceleration(1000)
-        .maxVelocity(2000)
+        .maxAcceleration(2500)
+        .maxVelocity(5000)
         .allowedClosedLoopError(1);
       m_motorSoftLimitLeft = new SoftLimitConfig();
       m_motorSoftLimitLeft.forwardSoftLimit(ElevatorConstants.kSoftLimit)

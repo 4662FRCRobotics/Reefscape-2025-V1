@@ -148,8 +148,8 @@ public class RobotContainer {
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
     m_CommandGenericHID.button(1)
         .onTrue(m_elevator.cmdUpdateElevatorConfig());
-    m_operatorController.rightYDownTrigger()
-        .onTrue(m_HandSubsystem.cmdHandZero());
+    //m_operatorController.rightYDownTrigger()
+    //    .onTrue(m_HandSubsystem.cmdHandZero());
     new Trigger(() -> m_elevator.isElevatorAtCrossbar())
         .onTrue(m_HandSubsystem.cmdSetHandPosition().onlyIf(() -> m_HandSubsystem.isHandDown()));
 

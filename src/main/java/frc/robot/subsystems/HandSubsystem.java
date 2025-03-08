@@ -43,8 +43,8 @@ public class HandSubsystem extends SubsystemBase {
         .d(0)
         .outputRange(-1, 1);
       m_motorConfigHand.closedLoop.maxMotion
-        .maxAcceleration(1000)
-        .maxVelocity(2000)
+        .maxAcceleration(2500)
+        .maxVelocity(5000)
         .allowedClosedLoopError(1);
       m_closedLoopHand = m_motorHand.getClosedLoopController();
       m_motorHand.configure(m_motorConfigHand, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
