@@ -5,19 +5,19 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+//import edu.wpi.first.math.controller.PIDController;
+//import edu.wpi.first.math.controller.ProfiledPIDController;
+//import edu.wpi.first.math.geometry.Pose2d;
+//import edu.wpi.first.math.geometry.Rotation2d;
+//import edu.wpi.first.math.geometry.Translation2d;
+//import edu.wpi.first.math.trajectory.Trajectory;
+//import edu.wpi.first.math.trajectory.TrajectoryConfig;
+//import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+//import edu.wpi.first.wpilibj.PS4Controller.Button;
+//import frc.robot.Constants.AutoConstants;
+//import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.libraries.CommandXBoxOpControl;
@@ -30,12 +30,12 @@ import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+//import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import java.util.List;
+//import java.util.List;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -132,8 +132,8 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
     m_operatorController.leftBumper()
         .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
-    m_operatorController.rightBumper()
-        .onTrue(m_elevator.cmdElevatorZero());
+   // m_operatorController.rightBumper()
+  //      .onTrue(m_elevator.cmdElevatorZero());
     m_operatorController.povUp()
         .onTrue(m_elevator.cmdAdjustElevatorPosition(true));
     m_operatorController.povDown()
@@ -143,9 +143,9 @@ public class RobotContainer {
     m_operatorController.leftTrigger()
         .onTrue(m_HandSubsystem.cmdSetHandPosition().unless(() -> m_elevator.isElevatorInPickup()));
     m_operatorController.povLeft()
-        .onTrue(m_HandSubsystem.cmdAdjustHandPosition(true));
-    m_operatorController.povRight()
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
+    m_operatorController.povRight()
+        .onTrue(m_HandSubsystem.cmdAdjustHandPosition(true));
     m_CommandGenericHID.button(1)
         .onTrue(m_elevator.cmdUpdateElevatorConfig());
     //m_operatorController.rightYDownTrigger()
