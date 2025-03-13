@@ -130,8 +130,8 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel3));
     m_operatorController.y()
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
-    //m_operatorController.leftBumper()
-    //    .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
+    m_operatorController.leftBumper()
+        .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
     m_operatorController.rightBumper()
         .onTrue(m_elevator.cmdElevatorZero());
     m_operatorController.povUp()
