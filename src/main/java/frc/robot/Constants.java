@@ -127,7 +127,7 @@ public final class Constants {
  
   public static final class HandConstants {
     public static final int motorHand = 30;
-    public static final double kHandUp = -15;
+    public static final double kHandUp = -45;
    // public static final double kHandMid = 5;
     public static final double kHandDown = 0;
     public static final double kHandStallCurrent = 20;
