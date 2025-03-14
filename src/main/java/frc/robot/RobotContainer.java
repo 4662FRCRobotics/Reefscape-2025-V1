@@ -123,13 +123,13 @@ public class RobotContainer {
     ;
   
     m_operatorController.a() 
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTrough));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTroughInches));
     m_operatorController.x()
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel2));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel2Inches));
     m_operatorController.b()
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel3));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel3Inches));
     m_operatorController.y()
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4Inches));
     m_operatorController.leftBumper()
         .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
    // m_operatorController.rightBumper()

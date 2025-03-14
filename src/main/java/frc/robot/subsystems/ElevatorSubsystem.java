@@ -108,7 +108,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void setElevatorPosition(double targetPosition) {
     m_elevatorTargetPostion = targetPosition;
-    m_closedLoopElevatorLeft.setReference(m_elevatorTargetPostion, ControlType.kMAXMotionPositionControl);
+    double targetEncoderPosition = ((m_elevatorTargetPostion - ElevatorConstants.kHandStartUpInches) / ElevatorConstants.kWinchCircumferenceInches) * ElevatorConstants.kGearRatio;
+    m_closedLoopElevatorLeft.setReference(targetEncoderPosition, ControlType.kMAXMotionPositionControl);
   }
 
   private void adjustElevatorPosition(boolean isAdjustUp) {
@@ -117,7 +118,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     } else {
       m_elevatorTargetPostion = m_elevatorTargetPostion - ElevatorConstants.kPostionAdjust;
     }
-    m_closedLoopElevatorLeft.setReference(m_elevatorTargetPostion, ControlType.kMAXMotionPositionControl);
+    setElevatorPosition(m_elevatorTargetPostion);
+  //  m_closedLoopElevatorLeft.setReference(m_elevatorTargetPostion, ControlType.kMAXMotionPositionControl);
   }
 
   public Command cmdAdjustElevatorPosition(boolean isAdjustUp) {
@@ -145,7 +147,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
 public boolean isElevatorUp() {
-  return m_encoderElevatorLeft.getPosition() > ElevatorConstants.kLevel2;
+  return m_encoderElevatorLeft.getPosition() > ElevatorConstants.kLevel2Inches;
 }
 
 public boolean isElevatorInPickup() {

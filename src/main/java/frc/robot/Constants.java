@@ -109,10 +109,10 @@ public final class Constants {
   public static final class ElevatorConstants {
     public static final int motorElevatorLeft = 20;
     public static final int motorElevatorRight = 21;
-    public static final double kTrough = 0;
-    public static final double kLevel2 = 0;
-    public static final double kLevel3 = 70;
-    public static final double kLevel4 = 155;
+   // public static final double kTrough = 0;
+    //public static final double kLevel2 = 0;
+    //public static final double kLevel3 = 70;
+    //public static final double kLevel4 = 155;
     public static final double kPostionAdjust = 5;
     public static final int kCurrentLimit = 40;
     public static final double kSecondaryCurrentLimit = 50;
@@ -122,7 +122,15 @@ public final class Constants {
     public static final double kFloorLevel = -100;
     public static final double kCoralPickup = 5;
     public static final double kCrossbar = 30;
-    public static final double kSoftLimit = 156;
+  
+    public static final double kTroughInches = 17.88;
+    public static final double kLevel2Inches = 31.72;
+    public static final double kLevel3Inches = 47.59;
+    public static final double kLevel4Inches = 71.87;
+    public static final double kWinchCircumferenceInches = (1.25 * Math.PI);
+    public static final double kHandStartUpInches = 41;
+    public static final double kGearRatio = 5 * 3;
+    public static final double kSoftLimit = ((kLevel4Inches + 0.25 - kHandStartUpInches) / kWinchCircumferenceInches) * kGearRatio;
  }
  
   public static final class HandConstants {
