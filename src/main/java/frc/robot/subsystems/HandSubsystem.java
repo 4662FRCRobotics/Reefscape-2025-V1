@@ -89,14 +89,27 @@ public class HandSubsystem extends SubsystemBase {
   }
 
   public void setHandPosition() {
-    if (m_handTargetPosition == HandConstants.kHandDown) {
+    if (m_handTargetPosition >= HandConstants.kHandDownish) {
       m_handTargetPosition = HandConstants.kHandUp;
     }
     else {
       m_handTargetPosition = HandConstants.kHandDown;
     }
     //m_handTargetPosition = targetPosition;
+    setHandPosition(m_handTargetPosition);
+  }
+
+  private void setHandPosition(double targetPosition) {
+    m_handTargetPosition = targetPosition;
     m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
+  }
+
+  public Command cmdSetHandUp() {
+    return Commands.runOnce(() -> setHandPosition(HandConstants.kHandUp), this);
+  }
+
+  public Command cmdSetHandDown() {
+    return Commands.runOnce(() -> setHandPosition(HandConstants.kHandDown), this);
   }
 
   public Command cmdAdjustHandPosition(boolean isAdjustUp) {
@@ -122,6 +135,6 @@ public class HandSubsystem extends SubsystemBase {
   }
 
   public boolean isHandDown() {
-    return m_handTargetPosition == HandConstants.kHandDown;
+    return m_handTargetPosition >= (HandConstants.kHandDown) - 25;
   }
 }

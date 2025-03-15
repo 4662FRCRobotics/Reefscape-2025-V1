@@ -145,6 +145,7 @@ public final class Constants {
     public static final double kPostionAdjust = 15  / kEncoderDegrees; // angle is in degrees 
     public static final double kFwdSoftLimit = -180 / kEncoderDegrees;
     public static final double kRevSoftLimit = 0 / kEncoderDegrees;
+    public static final double kHandDownish = -25;
 
  }
 

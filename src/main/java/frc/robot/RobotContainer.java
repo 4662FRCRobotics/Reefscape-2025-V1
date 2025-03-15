@@ -141,7 +141,9 @@ public class RobotContainer {
     new Trigger(() -> m_elevator.isElevatorStalled())
         .onTrue(m_elevator.cmdStopElevator());
     m_operatorController.leftTrigger()
-        .onTrue(m_HandSubsystem.cmdSetHandPosition().unless(() -> m_elevator.isElevatorInPickup()));
+        .onTrue(m_HandSubsystem.cmdSetHandUp().unless(() -> m_elevator.isElevatorInPickup()));
+    m_operatorController.rightTrigger()
+        .onTrue(m_HandSubsystem.cmdSetHandDown());
     m_operatorController.povLeft()
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
     m_operatorController.povRight()
@@ -151,7 +153,7 @@ public class RobotContainer {
     //m_operatorController.rightYDownTrigger()
     //    .onTrue(m_HandSubsystem.cmdHandZero());
     new Trigger(() -> m_elevator.isElevatorAtCrossbar())
-        .onTrue(m_HandSubsystem.cmdSetHandPosition().onlyIf(() -> m_HandSubsystem.isHandDown()));
+        .onTrue(m_HandSubsystem.cmdSetHandUp());
     m_operatorController.rightBumper()
         .whileTrue(Commands.run(()->m_HandSubsystem.stopHandMotor()));
 
