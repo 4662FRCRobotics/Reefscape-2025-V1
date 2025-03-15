@@ -59,8 +59,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         .maxVelocity(5000)
         .allowedClosedLoopError(1);
       m_motorSoftLimitLeft = new SoftLimitConfig();
-      m_motorSoftLimitLeft.forwardSoftLimit(ElevatorConstants.kSoftLimit)
-        .forwardSoftLimitEnabled(true);
+      m_motorSoftLimitLeft.forwardSoftLimit(ElevatorConstants.kFwdSoftLimit)
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimit(ElevatorConstants.kRevSoftLimit)
+        .reverseSoftLimitEnabled(true);
         
     m_closedLoopElevatorLeft = m_motorElevatorLeft.getClosedLoopController();
     m_motorElevatorLeft.configure(m_motorConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -84,7 +86,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Left Current",m_motorElevatorLeft.getOutputCurrent());
     SmartDashboard.putNumber("Right Current",m_motorElevatorRight.getOutputCurrent());
     SmartDashboard.putNumber("Elevator Position",m_elevatorTargetPostion);
-    SmartDashboard.putNumber("Actual Pos", m_encoderElevatorLeft.getPosition());
+    SmartDashboard.putNumber("Actual Pos", getPositionInches());
     SmartDashboard.putNumber("Elevator P" , m_elevatorP);
     SmartDashboard.putNumber( "Elevator I" , m_elevatorI);
     SmartDashboard.putNumber( "Elevator D" , m_elevatorD);
@@ -147,15 +149,20 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
 public boolean isElevatorUp() {
-  return m_encoderElevatorLeft.getPosition() > ElevatorConstants.kLevel2Inches;
+  return getPositionInches() > ElevatorConstants.kLevel2Inches;
 }
 
 public boolean isElevatorInPickup() {
-  return m_encoderElevatorLeft.getPosition() <= ElevatorConstants.kCoralPickup;
+  return getPositionInches() <= ElevatorConstants.kCoralPickup;
 }
 
 public boolean isElevatorAtCrossbar() {
-  return m_encoderElevatorLeft.getPosition() >= ElevatorConstants.kCrossbar;
+  return getPositionInches() >= ElevatorConstants.kCrossbar;
+}
+
+private double getPositionInches() {
+  return (( m_encoderElevatorLeft.getPosition() / ElevatorConstants.kGearRatio) * ElevatorConstants.kWinchCircumferenceInches) + ElevatorConstants.kHandStartUpInches;
+  // ((m_elevatorTargetPostion - ElevatorConstants.kHandStartUpInches) / ElevatorConstants.kWinchCircumferenceInches) * ElevatorConstants.kGearRatio;
 }
 
 private void elevatorZero(){
