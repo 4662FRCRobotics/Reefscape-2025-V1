@@ -120,8 +120,6 @@ public final class Constants {
     public static final double kElevatorDown = -0.4;
     public static final double kBottomCurrent = 10;
     public static final double kFloorLevel = -100;
-   
-  
     public static final double kTroughInches = 17.88;
     public static final double kLevel2Inches = 31.72;
     public static final double kLevel3Inches = 47.59;
@@ -139,7 +137,7 @@ public final class Constants {
     public static final int motorHand = 30;
     public static final double kGearRatio = 5 * 5 * 3;
     public static final double kEncoderDegrees = 360 / kGearRatio;
-    public static final double kHandUp = -130 / kEncoderDegrees; // angle is negative degrees
+    public static final double kHandUp = -170 / kEncoderDegrees; // angle is negative degrees
     public static final double kHandDown = 0 / kEncoderDegrees;
     public static final double kHandStallCurrent = 20;
     public static final int kCurrentLimit = 20;

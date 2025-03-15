@@ -152,6 +152,8 @@ public class RobotContainer {
     //    .onTrue(m_HandSubsystem.cmdHandZero());
     new Trigger(() -> m_elevator.isElevatorAtCrossbar())
         .onTrue(m_HandSubsystem.cmdSetHandPosition().onlyIf(() -> m_HandSubsystem.isHandDown()));
+    m_operatorController.rightBumper()
+        .whileTrue(Commands.run(()->m_HandSubsystem.stopHandMotor()));
 
   }
 

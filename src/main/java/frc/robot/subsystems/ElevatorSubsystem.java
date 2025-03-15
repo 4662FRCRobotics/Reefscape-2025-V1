@@ -77,7 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     m_encoderElevatorLeft = m_motorElevatorLeft.getEncoder();
 
-    m_elevatorTargetPostion = 0;
+    m_elevatorTargetPostion = ElevatorConstants.kHandStartUpInches;
   }
 
   @Override
