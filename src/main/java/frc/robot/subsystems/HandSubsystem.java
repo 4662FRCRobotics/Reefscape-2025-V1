@@ -13,12 +13,14 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 //import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HandConstants;
 
@@ -28,6 +30,7 @@ public class HandSubsystem extends SubsystemBase {
   private SparkMaxConfig m_motorConfigHand;
   private RelativeEncoder m_encoderHand;
   private SparkClosedLoopController m_closedLoopHand;
+  private SoftLimitConfig m_SoftLimitHand;
   private double m_handTargetPosition = HandConstants.kHandDown;
 
   public HandSubsystem() {
@@ -47,6 +50,11 @@ public class HandSubsystem extends SubsystemBase {
         .maxVelocity(5000)
         .allowedClosedLoopError(1);
       m_closedLoopHand = m_motorHand.getClosedLoopController();
+       m_SoftLimitHand = new SoftLimitConfig();
+      m_SoftLimitHand.forwardSoftLimit(HandConstants.kFwdSoftLimit)
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimit(HandConstants.kRevSoftLimit)
+        .reverseSoftLimitEnabled(true);
       m_motorHand.configure(m_motorConfigHand, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
       m_encoderHand = m_motorHand.getEncoder();
@@ -81,14 +89,27 @@ public class HandSubsystem extends SubsystemBase {
   }
 
   public void setHandPosition() {
-    if (m_handTargetPosition == HandConstants.kHandDown) {
+    if (m_handTargetPosition >= HandConstants.kHandDownish) {
       m_handTargetPosition = HandConstants.kHandUp;
     }
     else {
       m_handTargetPosition = HandConstants.kHandDown;
     }
     //m_handTargetPosition = targetPosition;
+    setHandPosition(m_handTargetPosition);
+  }
+
+  private void setHandPosition(double targetPosition) {
+    m_handTargetPosition = targetPosition;
     m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
+  }
+
+  public Command cmdSetHandUp() {
+    return Commands.runOnce(() -> setHandPosition(HandConstants.kHandUp), this);
+  }
+
+  public Command cmdSetHandDown() {
+    return Commands.runOnce(() -> setHandPosition(HandConstants.kHandDown), this);
   }
 
   public Command cmdAdjustHandPosition(boolean isAdjustUp) {
@@ -114,6 +135,6 @@ public class HandSubsystem extends SubsystemBase {
   }
 
   public boolean isHandDown() {
-    return m_handTargetPosition == HandConstants.kHandDown;
+    return m_handTargetPosition >= (HandConstants.kHandDown) - 25;
   }
 }

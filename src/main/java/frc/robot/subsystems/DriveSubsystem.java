@@ -77,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
             new Pose2d());
     private final Field2d m_field = new Field2d();
 
-  PhotonCamera m_driverCameraOne;
+ // PhotonCamera m_driverCameraOne;
   PhotonCamera m_driverCameraTwo;
 
   /** Creates a new DriveSubsystem. */
@@ -119,8 +119,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Field", m_field);
 
-    m_driverCameraOne = new PhotonCamera(DriveConstants.kCameraOne);
-    m_driverCameraOne.setDriverMode(true);
+   // m_driverCameraOne = new PhotonCamera(DriveConstants.kCameraOne);
+   // m_driverCameraOne.setDriverMode(true);
     m_driverCameraTwo = new PhotonCamera(DriveConstants.kCameraTwo);
     m_driverCameraTwo.setDriverMode(true);
 

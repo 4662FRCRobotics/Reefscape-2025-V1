@@ -109,31 +109,44 @@ public final class Constants {
   public static final class ElevatorConstants {
     public static final int motorElevatorLeft = 20;
     public static final int motorElevatorRight = 21;
-    public static final double kTrough = 0;
-    public static final double kLevel2 = 0;
-    public static final double kLevel3 = 70;
-    public static final double kLevel4 = 155;
-    public static final double kPostionAdjust = 5;
+   // public static final double kTrough = 0;
+    //public static final double kLevel2 = 0;
+    //public static final double kLevel3 = 70;
+    //public static final double kLevel4 = 155;
+    public static final double kPostionAdjust = 1;
     public static final int kCurrentLimit = 40;
     public static final double kSecondaryCurrentLimit = 50;
     public static final double kStallCurrent = 30;
     public static final double kElevatorDown = -0.4;
     public static final double kBottomCurrent = 10;
     public static final double kFloorLevel = -100;
-    public static final double kCoralPickup = 5;
-    public static final double kCrossbar = 30;
-    public static final double kSoftLimit = 156;
+    public static final double kTroughInches = 17.88;
+    public static final double kLevel2Inches = 31.72;
+    public static final double kLevel3Inches = 47.59;
+    public static final double kLevel4Inches = 71.87;
+    public static final double kWinchCircumferenceInches = (1.25 * Math.PI);
+    public static final double kHandStartUpInches = 41;
+    public static final double kGearRatio = 5 * 3; 
+    public static final double kCoralPickup = 3 + kHandStartUpInches;
+    public static final double kCrossbar = 6 + kHandStartUpInches;
+    public static final double kFwdSoftLimit = ((kLevel4Inches + 0.25 - kHandStartUpInches) / kWinchCircumferenceInches) * kGearRatio;
+    public static final double kRevSoftLimit = (( kHandStartUpInches - 0.25 - kHandStartUpInches) / kWinchCircumferenceInches) * kGearRatio;
  }
  
   public static final class HandConstants {
     public static final int motorHand = 30;
-    public static final double kHandUp = -45;
-   // public static final double kHandMid = 5;
-    public static final double kHandDown = 0;
+    public static final double kGearRatio = 5 * 5 * 3;
+    public static final double kEncoderDegrees = 360 / kGearRatio;
+    public static final double kHandUp = -170 / kEncoderDegrees; // angle is negative degrees
+    public static final double kHandDown = 0 / kEncoderDegrees;
     public static final double kHandStallCurrent = 20;
     public static final int kCurrentLimit = 20;
     public static final double kSecondaryCurrentLimit = 30;
-    public static final double kPostionAdjust = 5;
+    public static final double kPostionAdjust = 15  / kEncoderDegrees; // angle is in degrees 
+    public static final double kFwdSoftLimit = -180 / kEncoderDegrees;
+    public static final double kRevSoftLimit = 0 / kEncoderDegrees;
+    public static final double kHandDownish = -25;
+
  }
 
   public static final class CameraServoConstants {
