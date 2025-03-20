@@ -143,7 +143,7 @@ public class RobotContainer {
     m_operatorController.leftTrigger()
         .onTrue(m_HandSubsystem.cmdSetHandUp().unless(() -> m_elevator.isElevatorInPickup()));
     m_operatorController.rightTrigger()
-        .onTrue(m_HandSubsystem.cmdSetHandDown());
+        .onTrue(m_HandSubsystem.cmdSetHandDown().unless(() -> m_elevator.isElevatorInPickup()));
     m_operatorController.povLeft()
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
     m_operatorController.povRight()
