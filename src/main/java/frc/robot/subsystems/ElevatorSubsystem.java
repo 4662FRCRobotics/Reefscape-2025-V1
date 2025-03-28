@@ -25,6 +25,25 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
+  public enum ElevatorLevel {
+    kL1 (17.88),
+    kL2 (31.72),
+    kL3 (47.59),
+    kL4 (71.87);
+
+    public double m_positionInches;
+    public double m_positionEncoder;
+
+    private ElevatorLevel(double positionInches) {
+      this.m_positionInches = positionInches;
+      this.m_positionEncoder = ((positionInches - ElevatorConstants.kHandStartUpInches) / ElevatorConstants.kWinchCircumferenceInches) * ElevatorConstants.kGearRatio;
+    }
+
+    public double getPositionInches() {
+      return m_positionInches;
+    }
+  }
+
   private SparkMax m_motorElevatorLeft;
   private SparkMax m_motorElevatorRight;
   private SparkMaxConfig m_motorConfigRight;
@@ -108,7 +127,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> updateElevatorConfig() , this).ignoringDisable(true);
   }
 
-  public void setElevatorPosition(double targetPosition) {
+  private void setElevatorPosition(double targetPosition) {
     m_elevatorTargetPostion = targetPosition;
     double targetEncoderPosition = ((m_elevatorTargetPostion - ElevatorConstants.kHandStartUpInches) / ElevatorConstants.kWinchCircumferenceInches) * ElevatorConstants.kGearRatio;
     m_closedLoopElevatorLeft.setReference(targetEncoderPosition, ControlType.kMAXMotionPositionControl);
@@ -128,19 +147,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> adjustElevatorPosition(isAdjustUp) , this);
   }
 
-  public Command cmdSetElevatorPosition(double targetPosition) {
-    return Commands.runOnce(() -> setElevatorPosition(targetPosition) , this);
-  }
-
-  public void runMotor(double speed){
-    m_motorElevatorLeft.set(speed);
+  public Command cmdSetElevatorPosition(ElevatorLevel elevatorLevel) {
+    return Commands.runOnce(() -> setElevatorPosition(elevatorLevel.getPositionInches()) , this);
   }
 
   public boolean isElevatorStalled(){
     return m_motorElevatorLeft.getOutputCurrent() >= ElevatorConstants.kStallCurrent;
   }
 
-  public void stopElevatorMotor(){
+  private void stopElevatorMotor(){
     m_motorElevatorLeft.set(0);
   }
 
@@ -148,33 +163,28 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> stopElevatorMotor() , this);
   }
 
-public boolean isElevatorUp() {
-  return getPositionInches() > ElevatorConstants.kLevel2Inches;
-}
+  public boolean isElevatorUp() {
+    return getPositionInches() > ElevatorLevel.kL2.getPositionInches();
+  }
 
-public boolean isElevatorInPickup() {
-  return getPositionInches() <= ElevatorConstants.kCoralPickup;
-}
+  public boolean isElevatorInPickup() {
+    return getPositionInches() <= ElevatorConstants.kCoralPickup;
+  }
 
-public boolean isElevatorAtCrossbar() {
-  return getPositionInches() >= ElevatorConstants.kCrossbar;
-}
+  public boolean isElevatorAtCrossbar() {
+    return getPositionInches() >= ElevatorConstants.kCrossbar;
+  }
 
-private double getPositionInches() {
-  return (( m_encoderElevatorLeft.getPosition() / ElevatorConstants.kGearRatio) * ElevatorConstants.kWinchCircumferenceInches) + ElevatorConstants.kHandStartUpInches;
-  // ((m_elevatorTargetPostion - ElevatorConstants.kHandStartUpInches) / ElevatorConstants.kWinchCircumferenceInches) * ElevatorConstants.kGearRatio;
-}
+  private double getPositionInches() {
+    return (( m_encoderElevatorLeft.getPosition() / ElevatorConstants.kGearRatio) * ElevatorConstants.kWinchCircumferenceInches) + ElevatorConstants.kHandStartUpInches;
+  }
 
-private void elevatorZero(){
-  stopElevatorMotor();
-  m_encoderElevatorLeft.setPosition(0);
-}
-public Command cmdElevatorZero(){
-  //return Commands.runOnce(() -> stopElevatorMotor(), this)
-   // .andThen(Commands.run(() -> runMotor(ElevatorConstants.kElevatorDown) , this))
-   return Commands.run(() -> setElevatorPosition(ElevatorConstants.kFloorLevel))
-    .until(() -> m_motorElevatorLeft.getOutputCurrent() >= ElevatorConstants.kBottomCurrent)
-    .andThen(() -> elevatorZero() , this)
-    ;
-}
+  private void elevatorZero(){
+    stopElevatorMotor();
+    m_encoderElevatorLeft.setPosition(0);
+  }
+  public Command cmdElevatorZero(){
+    return Commands.runOnce(() -> elevatorZero(), this);
+
+  }
 }

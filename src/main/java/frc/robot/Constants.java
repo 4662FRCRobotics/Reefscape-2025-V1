@@ -119,17 +119,17 @@ public final class Constants {
     public static final double kStallCurrent = 30;
     public static final double kElevatorDown = -0.4;
     public static final double kBottomCurrent = 10;
-    public static final double kFloorLevel = -100;
-    public static final double kTroughInches = 17.88;
-    public static final double kLevel2Inches = 31.72;
-    public static final double kLevel3Inches = 47.59;
-    public static final double kLevel4Inches = 71.87;
+    //public static final double kFloorLevel = -100;
+    //public static final double kTroughInches = 17.88;
+    //public static final double kLevel2Inches = 31.72;
+    //public static final double kLevel3Inches = 47.59;
+    //public static final double kLevel4Inches = 71.87;
     public static final double kWinchCircumferenceInches = (1.25 * Math.PI);
     public static final double kHandStartUpInches = 41;
     public static final double kGearRatio = 5 * 3; 
     public static final double kCoralPickup = 3 + kHandStartUpInches;
     public static final double kCrossbar = 6 + kHandStartUpInches;
-    public static final double kFwdSoftLimit = ((kLevel4Inches + 0.25 - kHandStartUpInches) / kWinchCircumferenceInches) * kGearRatio;
+    public static final double kFwdSoftLimit = ((72 - kHandStartUpInches) / kWinchCircumferenceInches) * kGearRatio;
     public static final double kRevSoftLimit = (( kHandStartUpInches - 0.25 - kHandStartUpInches) / kWinchCircumferenceInches) * kGearRatio;
  }
  

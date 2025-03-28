@@ -27,6 +27,7 @@ import frc.robot.subsystems.CameraServoSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HandSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorLevel;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -123,15 +124,15 @@ public class RobotContainer {
     ;
   
     m_operatorController.a() 
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kTroughInches));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorLevel.kL1));
     m_operatorController.x()
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel2Inches));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorLevel.kL2));
     m_operatorController.b()
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel3Inches));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorLevel.kL3));
     m_operatorController.y()
-        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4Inches));
+        .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorLevel.kL4));
     m_operatorController.leftBumper()
-        .whileTrue(Commands.run(()->m_elevator.runMotor(0)));
+        .onTrue(m_elevator.cmdStopElevator());
    // m_operatorController.rightBumper()
   //      .onTrue(m_elevator.cmdElevatorZero());
     m_operatorController.povUp()
