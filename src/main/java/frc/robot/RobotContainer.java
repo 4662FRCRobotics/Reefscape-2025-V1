@@ -5,20 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-//import edu.wpi.first.math.controller.PIDController;
-//import edu.wpi.first.math.controller.ProfiledPIDController;
-//import edu.wpi.first.math.geometry.Pose2d;
-//import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.math.geometry.Translation2d;
-//import edu.wpi.first.math.trajectory.Trajectory;
-//import edu.wpi.first.math.trajectory.TrajectoryConfig;
-//import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-//import edu.wpi.first.wpilibj.PS4Controller.Button;
-//import frc.robot.Constants.AutoConstants;
-//import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.libraries.CommandXBoxOpControl;
 import frc.robot.libraries.ConsoleAuto;
@@ -52,14 +40,10 @@ public class RobotContainer {
   private final CameraServoSubsystem m_CameraServoSubsystem = new CameraServoSubsystem();
 
   // The driver's controller
-  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  CommandXBoxOpControl m_operatorController = new CommandXBoxOpControl(OIConstants.kOperatorControllerPort);
-
-  private final ConsoleAuto m_ConsoleAuto = 
-    new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
-  
-  private final CommandGenericHID m_CommandGenericHID = 
-    new CommandGenericHID(OIConstants.kTeleopConsolePort);
+  private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  private final CommandXBoxOpControl m_operatorController = new CommandXBoxOpControl(OIConstants.kOperatorControllerPort);
+  private final ConsoleAuto m_ConsoleAuto = new ConsoleAuto(OIConstants.kAUTONOMOUS_CONSOLE_PORT);
+  private final CommandGenericHID m_CommandGenericHID = new CommandGenericHID(OIConstants.kTeleopConsolePort);
 
   private final AutonomousSubsystem m_AutonomousSubsystem = new AutonomousSubsystem(m_ConsoleAuto, this);
 
@@ -86,8 +70,8 @@ public class RobotContainer {
     
     m_CameraServoSubsystem.setDefaultCommand(
       //m_CameraServoSubsystem.cmdCameraAngle(m_CommandGenericHID.getRawAxis(0))
-     new RunCommand(
-      () -> m_CameraServoSubsystem.setCameraAngle(m_CommandGenericHID.getRawAxis(0)) , m_CameraServoSubsystem)
+      new RunCommand(
+       () -> m_CameraServoSubsystem.setCameraAngle(m_CommandGenericHID.getRawAxis(0)) , m_CameraServoSubsystem)
     );
   }
 
@@ -107,22 +91,24 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
     
-     runAutoConsoleFalse();
-    //new Trigger(DriverStation::isDisabled)
-    //new Trigger(RobotModeTriggers.disabled())
+    // autonomous selection runs when disabled
+    // but must be triggered by code at startup for disabled state change
+    runAutoConsoleFalse();
+    
     new Trigger(trgAutoSelect())
       .whileTrue(m_AutonomousSubsystem.cmdAutoSelect());
     runAutoConsoleTrue();
 
     new Trigger(RobotModeTriggers.disabled())
       .onTrue(Commands.runOnce(this::runAutoConsoleTrue)
-        .ignoringDisable(true))
+      .ignoringDisable(true))
       ;
 
     new Trigger(RobotModeTriggers.disabled())
-    .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
-    ;
+      .onFalse(Commands.runOnce(this::runAutoConsoleFalse))
+      ;
   
+    // elevator commands
     m_operatorController.a() 
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorLevel.kL1));
     m_operatorController.x()
@@ -133,14 +119,14 @@ public class RobotContainer {
         .onTrue(m_elevator.cmdSetElevatorPosition(ElevatorLevel.kL4));
     m_operatorController.leftBumper()
         .onTrue(m_elevator.cmdStopElevator());
-   // m_operatorController.rightBumper()
-  //      .onTrue(m_elevator.cmdElevatorZero());
     m_operatorController.povUp()
         .onTrue(m_elevator.cmdAdjustElevatorPosition(true));
     m_operatorController.povDown()
         .onTrue(m_elevator.cmdAdjustElevatorPosition(false));
     new Trigger(() -> m_elevator.isElevatorStalled())
         .onTrue(m_elevator.cmdStopElevator());
+
+    // hand commands
     m_operatorController.leftTrigger()
         .onTrue(m_HandSubsystem.cmdSetHandUp().unless(() -> m_elevator.isElevatorInPickup()));
     m_operatorController.rightTrigger()
@@ -149,14 +135,18 @@ public class RobotContainer {
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(false));
     m_operatorController.povRight()
         .onTrue(m_HandSubsystem.cmdAdjustHandPosition(true));
-    m_CommandGenericHID.button(1)
-        .onTrue(m_elevator.cmdUpdateElevatorConfig());
-    //m_operatorController.rightYDownTrigger()
-    //    .onTrue(m_HandSubsystem.cmdHandZero());
     new Trigger(() -> m_elevator.isElevatorAtCrossbar())
         .onTrue(m_HandSubsystem.cmdSetHandUp());
     m_operatorController.rightBumper()
         .whileTrue(Commands.run(()->m_HandSubsystem.stopHandMotor()));
+
+    // special stuff put on the control box to avoid accidental big changes
+    m_CommandGenericHID.button(1)
+        .onTrue(m_elevator.cmdUpdateElevatorConfig());
+    m_CommandGenericHID.button(4)
+        .onTrue(m_elevator.cmdElevatorZero());
+    //m_operatorController.rightYDownTrigger()
+    //    .onTrue(m_HandSubsystem.cmdHandZero());
 
   }
 

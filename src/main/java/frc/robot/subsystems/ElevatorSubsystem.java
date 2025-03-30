@@ -26,10 +26,17 @@ import frc.robot.Constants.ElevatorConstants;
 public class ElevatorSubsystem extends SubsystemBase {
 
   public enum ElevatorLevel {
+    // level values and parameter(s)
+    // position in inches is based on a "hand up" height of 41 stored in ElevatorConstants.kHandStartUpInches
     kL1 (17.88),
     kL2 (31.72),
     kL3 (47.59),
-    kL4 (71.87);
+    kL4 (71.87),
+    kElevatorTop (72),
+    kElevatorBottomHandDown (41),
+    kElevatorBottomHandUp (28),
+    kCrossBarLim (46),
+    kCoralPickup (44);
 
     public double m_positionInches;
     public double m_positionEncoder;
@@ -41,6 +48,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public double getPositionInches() {
       return m_positionInches;
+    }
+
+    public double getPositionEncoder() {
+      return m_positionEncoder;
     }
   }
 
@@ -78,9 +89,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         .maxVelocity(5000)
         .allowedClosedLoopError(1);
       m_motorSoftLimitLeft = new SoftLimitConfig();
-      m_motorSoftLimitLeft.forwardSoftLimit(ElevatorConstants.kFwdSoftLimit)
+      m_motorSoftLimitLeft.forwardSoftLimit(ElevatorLevel.kElevatorTop.getPositionEncoder())
         .forwardSoftLimitEnabled(true)
-        .reverseSoftLimit(ElevatorConstants.kRevSoftLimit)
+        .reverseSoftLimit(ElevatorLevel.kElevatorBottomHandDown.getPositionEncoder())
         .reverseSoftLimitEnabled(true);
         
     m_closedLoopElevatorLeft = m_motorElevatorLeft.getClosedLoopController();
@@ -128,6 +139,15 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   private void setElevatorPosition(double targetPosition) {
+    if (targetPosition > ElevatorLevel.kElevatorTop.getPositionInches()) {
+      targetPosition = ElevatorLevel.kElevatorTop.getPositionInches();
+    }
+
+    // if hand is down use hand down limit
+    if (targetPosition < ElevatorLevel.kElevatorBottomHandUp.getPositionInches()) {
+      targetPosition = ElevatorLevel.kElevatorBottomHandUp.getPositionInches();
+    }
+
     m_elevatorTargetPostion = targetPosition;
     double targetEncoderPosition = ((m_elevatorTargetPostion - ElevatorConstants.kHandStartUpInches) / ElevatorConstants.kWinchCircumferenceInches) * ElevatorConstants.kGearRatio;
     m_closedLoopElevatorLeft.setReference(targetEncoderPosition, ControlType.kMAXMotionPositionControl);
@@ -168,11 +188,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean isElevatorInPickup() {
-    return getPositionInches() <= ElevatorConstants.kCoralPickup;
+    return getPositionInches() <= ElevatorLevel.kCoralPickup.getPositionInches();
   }
 
   public boolean isElevatorAtCrossbar() {
-    return getPositionInches() >= ElevatorConstants.kCrossbar;
+    return getPositionInches() >= ElevatorLevel.kCrossBarLim.getPositionInches();
   }
 
   private double getPositionInches() {

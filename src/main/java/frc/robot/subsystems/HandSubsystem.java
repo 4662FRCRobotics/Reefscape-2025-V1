@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -20,8 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
-//import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.HandConstants;
 
 public class HandSubsystem extends SubsystemBase {
@@ -83,7 +83,7 @@ public class HandSubsystem extends SubsystemBase {
     if (isAdjustUp) {
       m_handTargetPosition = m_handTargetPosition + HandConstants.kPostionAdjust;
     } else {
-        m_handTargetPosition = m_handTargetPosition - HandConstants.kPostionAdjust;
+      m_handTargetPosition = m_handTargetPosition - HandConstants.kPostionAdjust;
     }
     m_closedLoopHand.setReference(m_handTargetPosition, ControlType.kMAXMotionPositionControl);
   }
@@ -135,6 +135,10 @@ public class HandSubsystem extends SubsystemBase {
   }
 
   public boolean isHandDown() {
-    return m_handTargetPosition >= (HandConstants.kHandDown) - 25;
+    return m_handTargetPosition >= (HandConstants.kHandDownish);
+  }
+
+  public BooleanSupplier isHandDownSplr() {
+    return () -> m_handTargetPosition >= (HandConstants.kHandDownish);
   }
 }
