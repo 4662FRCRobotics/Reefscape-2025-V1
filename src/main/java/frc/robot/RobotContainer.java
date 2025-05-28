@@ -180,10 +180,15 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //return m_robotDrive.getPathStep("drive out - Auto");
+   // return m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4Inches);
     return m_AutonomousSubsystem.cmdAutoControl();
   }
 
   public Command getDrivePlanCmd(String planName) {
     return m_robotDrive.getPathStep(planName);
+  }
+
+  public Command getLiftCmd(){
+    return  m_elevator.cmdSetElevatorPosition(ElevatorConstants.kLevel4Inches);
   }
 }

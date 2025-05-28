@@ -20,7 +20,8 @@ public class AutonomousSubsystem extends SubsystemBase{
     DRIVEOUT,
     REEFCENTER,
     REEFLEFT,
-    REEFRIGHT;
+    REEFRIGHT,
+    LIFT;
 
     public String getSelectName() {
         return this.toString();
@@ -49,7 +50,8 @@ public class AutonomousSubsystem extends SubsystemBase{
     WAIT2('W', 2.0, 0, 0, ""),
     WAITLOOP('W', 99.9, 0, 0, ""),
     DRIVE_OUT('D', 0.0, 1, 0, "drive out - Auto"),
-    DRIVE_REEF_LEFT('D', 0.0, 1, 0, "reef barge left - auto")
+    DRIVE_REEF_LEFT('D', 0.0, 1, 0, "reef barge left - auto"),
+    LIFT_ARM('L',0.0,2,0,"lift elevator")
     //SHOOTNOTE('S', 0.0, 1),
    // SpkrCntrOut1('D', 0.0, 2),
    // SpkrCntrRtrn1('D', 0.0, 3),
@@ -170,6 +172,8 @@ public class AutonomousSubsystem extends SubsystemBase{
       //DRIVE OUT
           {AutonomousSteps.WAITLOOP,
            AutonomousSteps.DRIVE_OUT},
+
+            
       //REEF CENTER
           {AutonomousSteps.WAITLOOP, 
            // AutonomousSteps.SHOOTNOTE, 
@@ -185,7 +189,10 @@ public class AutonomousSubsystem extends SubsystemBase{
       //REEF RIGHT
           {AutonomousSteps.WAITLOOP
            // AutonomousSteps.SHOOTNOTE
-          }
+          },      // lift arm
+          {AutonomousSteps.WAITLOOP,
+              AutonomousSteps.DRIVE_OUT,
+            AutonomousSteps.LIFT_ARM}
     };
 
     if (m_autoStep.length < m_cmdSteps.length ) {
@@ -333,6 +340,9 @@ public class AutonomousSubsystem extends SubsystemBase{
         workCmd =  m_robotContainer.getDrivePlanCmd(autoStep.getplanName());
        // workCmd = Commands.print("Drive command");
         break;
+      case 'L':
+          workCmd = m_robotContainer.getLiftCmd();
+      break;
       case 'I':
        // workCmd =  m_robotContainer.getIntakePathCommand(autoStep.toString(), autoStep.getWaitTIme());
        workCmd = Commands.print("Intake command");
